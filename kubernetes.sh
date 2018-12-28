@@ -44,6 +44,11 @@ mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
+mkdir -p /home/ec2-user/.kube
+sudo cp -i /etc/kubernetes/admin.conf /home/ec2-user/.kube/config
+sudo chown ec2-user:ec2-user /home/ec2-user/.kube/config
+
+
 export KUBECONFIG=/etc/kubernetes/admin.conf
 
 sudo kubectl apply -f https://docs.projectcalico.org/v3.3/getting-started/kubernetes/installation/hosted/rbac-kdd.yaml
