@@ -1,0 +1,22 @@
+- hosts: master
+  become: yes
+  gather_facts: false
+  tasks:
+    - name: get join command
+      shell: kubeadm token create --print-join-command
+      register: join_command_raw
+
+    - name: set join command
+      set_fact:
+        join_command: "{{ join_command_raw.stdout_lines[0] }}"
+
+
+- hosts: workers
+  become: yes
+  tasks:
+    - name: join cluster
+      shell: "{{ hostvars['master'].join_command }} --ignore-preflight-errors all  >> node_joined.txt"
+#      shell: "sudo kubeadm join 172.31.42.171:6443 --token vp11xt.euxmwpyl8j2vn6yz     --discovery-token-ca-cert-hash sha256:a911a00c2744707a52f9a12e5a123f0098a7bf2d47193bc366f0a56865c1e0cc"
+      args:
+        chdir: $HOME
+        creates: node_joined.txt
